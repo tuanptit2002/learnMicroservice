@@ -14,3 +14,26 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  config:
+    import:
+      - "application_qa.yml"
+      - "application_prod.yml"
+  profiles:
+    active:
+      - "qa"
+
+
+
+
+
+build:
+  version: "3.0"
+
+accounts:
+  message: "Welcome to EazyBank account related local APIS"
+  accountDetails:
+    name: "Tuan Phung - Developer"
+    email: "tuanphung@gmail.com"
+  onCallSupport:
+    - 0774238752
+    - 0789114007

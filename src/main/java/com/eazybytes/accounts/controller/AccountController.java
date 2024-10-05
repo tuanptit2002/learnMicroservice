@@ -1,13 +1,16 @@
 package com.eazybytes.accounts.controller;
 
 import com.eazybytes.accounts.constants.AccountConstants;
+import com.eazybytes.accounts.dto.AccountsContactInfoDto;
 import com.eazybytes.accounts.dto.CustomerDto;
 import com.eazybytes.accounts.dto.RespondDto;
 import com.eazybytes.accounts.service.AccountService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,11 +21,18 @@ import org.springframework.web.bind.annotation.*;
         description = "CRUD REST APIs in EazyBank to CREATE,UPDATE,FETCH AND DELETE account details"
 )
 @RestController
-@AllArgsConstructor
 @RequestMapping("/api/v1/account")
 @Validated
+@EnableConfigurationProperties(AccountsContactInfoDto.class)
 public class AccountController {
+    @Autowired
     private AccountService accountService;
+
+    @Value("${build.version}")
+    private String buildVersion;
+
+    @Autowired
+    AccountsContactInfoDto accountsContactInfoDto;
 
     @PostMapping("/create")
     public ResponseEntity<RespondDto> createAccount(@Valid @RequestBody CustomerDto customerDto) {
@@ -32,9 +42,9 @@ public class AccountController {
     }
 
     @GetMapping("/fetch")
-    public ResponseEntity<CustomerDto> fetchAccountDetails( @RequestParam
-                                                                @Pattern(regexp = "(^$|[0-9]{10})",message = "Account number must be 10 digits")
-                                                                String numberMobile) {
+    public ResponseEntity<CustomerDto> fetchAccountDetails(@RequestParam
+                                                           @Pattern(regexp = "(^$|[0-9]{10})", message = "Account number must be 10 digits")
+                                                           String numberMobile) {
         CustomerDto customerDto = accountService.fetchAccount(numberMobile);
         return ResponseEntity.status(HttpStatus.OK).body(customerDto);
     }
@@ -53,13 +63,27 @@ public class AccountController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<RespondDto> deleteAccountDetails(@RequestParam
-                                                               @Pattern(regexp = "(^$|[0-9]{10})",message = "Account number must be 10 digits")
-                                                               String mobileNumber) {
+                                                           @Pattern(regexp = "(^$|[0-9]{10})", message = "Account number must be 10 digits")
+                                                           String mobileNumber) {
         boolean isDelete = accountService.deleteAccount(mobileNumber);
         if (isDelete) {
             return ResponseEntity.status(HttpStatus.OK).body(new RespondDto(AccountConstants.STATUS_200, AccountConstants.MESSAGE_200));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body((new RespondDto(AccountConstants.STATUS_417, AccountConstants.MESSAGE_417_DELETE)));
         }
+    }
+
+    @GetMapping("/build-info")
+    public ResponseEntity<AccountsContactInfoDto> getBuildInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accountsContactInfoDto);
+    }
+
+    @GetMapping("/build-version")
+    public ResponseEntity<String> getBuild() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildVersion);
     }
 }

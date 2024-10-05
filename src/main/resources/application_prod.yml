@@ -1,0 +1,17 @@
+spring:
+  config:
+    activate:
+      on-profile: "prod"
+
+
+build:
+  version: "1.0"
+
+accounts:
+  message: "Welcome to EazyBank account related Prod APIS"
+  accountDetails:
+    name: "Tuan Phung Prod- Developer"
+    email: "tuanphung@gmail.com"
+  onCallSupport:
+    - 0774238752
+    - 0789114007

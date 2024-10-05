@@ -1,0 +1,17 @@
+spring:
+  config:
+    activate:
+      on-profile: "qa"
+
+
+build:
+  version: "2.0"
+
+accounts:
+  message: "Welcome to EazyBank account related QA APIS"
+  accountDetails:
+    name: "Tuan Phung QA- Developer"
+    email: "tuanphung@gmail.com"
+  onCallSupport:
+    - 0774238752
+    - 0789114007
